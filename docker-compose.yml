@@ -8,7 +8,6 @@ services:
       - .env
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - /data/coolify/proxy/acme.json:/acme.json
     ports:
       - "5432:5432"
     networks:
@@ -22,18 +21,23 @@ services:
     container_name: lingolah-backend
     env_file:
       - .env
-    ports:
-      - "3000:3000"
     depends_on:
       - postgres
     networks:
       - lingolah-network
+      - traefik
     restart: unless-stopped
     environment:
       - DATABASE_URL=${DATABASE_URL}
       - CLERK_PUBLISHABLE_KEY=${CLERK_PUBLISHABLE_KEY}
       - CLERK_SECRET_KEY=${CLERK_SECRET_KEY}
       - FRONTEND_URL=${FRONTEND_URL}
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.backend.rule=Host(`api.lingolah.live`)"
+      - "traefik.http.routers.backend.entrypoints=https"
+      - "traefik.http.routers.backend.tls.certresolver=letsencrypt"
+      - "traefik.http.services.backend.loadbalancer.server.port=3000"
 
   frontend:
     build:
@@ -42,20 +46,27 @@ services:
     container_name: lingolah-frontend
     env_file:
       - .env
-    ports:
-      - "5173:5173"
     depends_on:
       - backend
     networks:
       - lingolah-network
+      - traefik
     restart: unless-stopped
     environment:
       - VITE_CLERK_PUBLISHABLE_KEY=${VITE_CLERK_PUBLISHABLE_KEY}
       - VITE_API_URL=${VITE_API_URL}
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.frontend.rule=Host(`lingolah.live`)"
+      - "traefik.http.routers.frontend.entrypoints=https"
+      - "traefik.http.routers.frontend.tls.certresolver=letsencrypt"
+      - "traefik.http.services.frontend.loadbalancer.server.port=5173"
 
 networks:
   lingolah-network:
     driver: bridge
-    
+  traefik:
+    external: true
+
 volumes:
   postgres_data:
