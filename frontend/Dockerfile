@@ -1,24 +1,36 @@
-# Use Node.js as the base image
-FROM node:20-alpine
+# Build stage
+FROM node:20-alpine as builder
 
-# Set working directory
 WORKDIR /app
 
-# Copy package files
 COPY package*.json ./
-
-# Install dependencies
 RUN npm ci
 
-# Copy the rest of the application
 COPY . .
+
+# Build the production frontend
 RUN npm run build
 
-# Install static file server
-RUN npm install -g serve
+# Production stage with NGINX
+FROM nginx:stable-alpine
 
-# Expose the port
-EXPOSE 5173
+# Copy the built files
+COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Serve the built Vue app from the dist folder
-CMD ["serve", "-s", "dist", "-l", "5173"]
+# Remove default config and add custom one if needed
+RUN rm /etc/nginx/conf.d/default.conf
+
+# Simple NGINX config to serve SPA
+RUN echo 'server { \
+    listen 80; \
+    server_name localhost; \
+    root /usr/share/nginx/html; \
+    index index.html; \
+    location / { \
+        try_files $uri $uri/ /index.html; \
+    } \
+}' > /etc/nginx/conf.d/default.conf
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]
