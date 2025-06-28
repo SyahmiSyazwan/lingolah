@@ -6,7 +6,7 @@ const cors = require('cors');
 
 // Apply CORS ONLY to this router
 router.use(cors({
-  origin: 'http://localhost:5173',
+  origin: ['https://lingolah.live', 'http://localhost:5173'] ,
   credentials: true
 }));
 // GET /api/admin/dashboard
