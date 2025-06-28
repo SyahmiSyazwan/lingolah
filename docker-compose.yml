@@ -37,6 +37,7 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.backend.rule=Host(`api.lingolah.live`)"
       - "traefik.http.routers.backend.entrypoints=https"
+      - "traefik.http.routers.backend.tls=true"      
       - "traefik.http.routers.backend.tls.certresolver=letsencrypt"
       - "traefik.http.services.backend.loadbalancer.server.port=3000"
 
@@ -61,12 +62,15 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.frontend.rule=Host(`lingolah.live`)"
       - "traefik.http.routers.frontend.entrypoints=https"
+      - "traefik.http.routers.frontend.tls=true"
       - "traefik.http.routers.frontend.tls.certresolver=letsencrypt"
       - "traefik.http.services.frontend.loadbalancer.server.port=5173"
 
 networks:
   lingolah-network:
     driver: bridge
+  coolify:
+    external: true
     
 volumes:
   postgres_data:
