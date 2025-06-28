@@ -12,9 +12,13 @@ RUN npm ci
 
 # Copy the rest of the application
 COPY . .
+RUN npm run build
+
+# Install static file server
+RUN npm install -g serve
 
 # Expose the port
 EXPOSE 5173
 
-# Command to run the development server
-CMD ["npm", "run", "build", "--", "--host", "0.0.0.0"]
+# Serve the built Vue app from the dist folder
+CMD ["serve", "-s", "dist", "-l", "5173"]
