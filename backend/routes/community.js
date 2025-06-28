@@ -1,4 +1,3 @@
-require('dotenv').config()
 var express = require("express");
 var router = express.Router();
 const { PrismaClient } = require("../generated/prisma");
@@ -10,7 +9,7 @@ const cors = require('cors');
 router.use(express.json());
 router.use(express.urlencoded({ extended: false }));
 router.use(cors({
-  origin: process.env.FRONTEND_URL,
+  origin: 'http://localhost:5173',
   credentials: true
 }));
 

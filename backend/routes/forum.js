@@ -1,5 +1,3 @@
-require('dotenv').config()
-console.log(process.env)
 var express = require("express");
 var router = express.Router();
 const { PrismaClient } = require("../generated/prisma");
@@ -8,7 +6,7 @@ const cors = require('cors');
 
 // Apply CORS ONLY to this router
 router.use(cors({
-  origin: process.env.FRONTEND_URL,
+  origin: 'http://localhost:5173',
   credentials: true
 }));
 // Get all posts
