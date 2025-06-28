@@ -12,6 +12,7 @@ services:
       - "5432:5432"
     networks:
       - lingolah-network
+      - coolify
     restart: unless-stopped
 
   backend:
