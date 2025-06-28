@@ -7,7 +7,7 @@ router.use(express.json());
 router.use(express.urlencoded({ extended: false }));
 // Apply CORS ONLY to this router
 router.use(cors({
-  origin: 'http://localhost:5173',
+  origin: ['https://lingolah.live', 'http://localhost:5173'] ,
   credentials: true
 }));
 function requireAdmin(req, res, next) {
