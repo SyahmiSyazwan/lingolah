@@ -56,6 +56,9 @@ services:
       - lingolah-network
       - coolify
     restart: unless-stopped
+    environment:
+      - VITE_CLERK_PUBLISHABLE_KEY=${VITE_CLERK_PUBLISHABLE_KEY}
+      - VITE_API_URL=${VITE_API_URL}
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.frontend.rule=Host(`lingolah.live`)"
