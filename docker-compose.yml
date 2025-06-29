@@ -50,6 +50,8 @@ services:
     container_name: lingolah-frontend
     env_file:
       - .env
+    ports:
+      - "5173:5173"
     depends_on:
       - backend
     networks:
@@ -65,7 +67,7 @@ services:
       - "traefik.http.routers.frontend.entrypoints=https"
       - "traefik.http.routers.frontend.tls=true"
       - "traefik.http.routers.frontend.tls.certresolver=letsencrypt"
-      - "traefik.http.services.frontend.loadbalancer.server.port=80"
+      - "traefik.http.services.frontend.loadbalancer.server.port=5173"
 
 networks:
   lingolah-network:
